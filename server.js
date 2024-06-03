@@ -4,15 +4,9 @@ const Product = require("./models/productModel")
 
 
 const app = express()
-//TO ACCEPT JSON DATA
-app.use(express.json())
+app.use(express.json())//TO ACCEPT JSON DATA
+app.use(express.urlencoded({extended:false}))//to accept form data
 
-// app.get("/",(req,res)=>{
-//     res.send("Hello this is server")
-// })
-// app.get("/blog",(req,res)=>{
-//     res.send("Hello this is blog")
-// })
 
 //TO GET ALL DATA FROM DATABASE
 app.get("/product",async(req,res)=>{
@@ -25,6 +19,9 @@ app.get("/product",async(req,res)=>{
         res.status(500).json({message:err.message})
     }
 })
+
+
+
 //TO GET SINGLE DATA FROM DATABASE
 app.get("/product/:id",async(req,res)=>{
     try{
@@ -36,6 +33,9 @@ app.get("/product/:id",async(req,res)=>{
         res.status(500).json({message:err.message})
     }
 })
+
+
+
 //TO SAVE DATA IN DATABASE
 app.post("/product",async(req,res)=>{
     try{
@@ -47,6 +47,25 @@ app.post("/product",async(req,res)=>{
         res.status(500).json({message:err.message})
     }
 })
+
+
+
+//TO UPDATE DATA IN DATABASE
+app.put("/product/:id",async(req,res)=>{
+    try{
+        const product = await Product.findByIdAndUpdate(req.params.id , req.body)
+        if(!product){
+            res.status(404).json({message:`No such product found with this id ${req.params.id}`})
+        }
+        const updatedProduct = await Product.findById(req.params.id)
+        res.status(200).json(updatedProduct)
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({message:err.message})
+    }
+})
+
 
 
 //TO CONNECT WITH MONGODB
