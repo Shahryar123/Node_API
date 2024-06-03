@@ -7,13 +7,35 @@ const app = express()
 //TO ACCEPT JSON DATA
 app.use(express.json())
 
-app.get("/",(req,res)=>{
-    res.send("Hello this is server")
-})
-app.get("/blog",(req,res)=>{
-    res.send("Hello this is blog")
-})
+// app.get("/",(req,res)=>{
+//     res.send("Hello this is server")
+// })
+// app.get("/blog",(req,res)=>{
+//     res.send("Hello this is blog")
+// })
 
+//TO GET ALL DATA FROM DATABASE
+app.get("/product",async(req,res)=>{
+    try{
+    const product = await Product.find({})
+    res.status(200).json(product)
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({message:err.message})
+    }
+})
+//TO GET SINGLE DATA FROM DATABASE
+app.get("/product/:id",async(req,res)=>{
+    try{
+    const product = await Product.findById(req.params.id)
+    res.status(200).json(product)
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json({message:err.message})
+    }
+})
 //TO SAVE DATA IN DATABASE
 app.post("/product",async(req,res)=>{
     try{
