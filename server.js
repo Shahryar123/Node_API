@@ -66,7 +66,22 @@ app.put("/product/:id",async(req,res)=>{
     }
 })
 
-
+//TO DELETE DATA FROM DATABASE
+app.delete("/product",async(req,res)=>{
+    try{
+        //const id =  req.params.id 
+        const id =  req.body.id 
+        const product = await Product.findByIdAndDelete(id)
+        if(!product){
+            return res.status(404).json({message:`No such product found with this id ${id}`})
+        }
+        return res.status(200).json(product)
+    }
+    catch(err){
+        console.log(err)
+        return res.status(500).json({message:err.message})
+    }
+})
 
 //TO CONNECT WITH MONGODB
 mongoose.set('strictQuery', false);//to avoid warning
