@@ -1,11 +1,13 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const Product = require("./models/productModel")
+const multer = require('multer');
+
 
 
 const app = express()
 app.use(express.json())//TO ACCEPT JSON DATA
-app.use(express.urlencoded({extended:false}))//to accept form data
+app.use(express.urlencoded({extended:false}))//to accept URL encoded form data
 
 
 //TO GET ALL DATA FROM DATABASE
@@ -36,19 +38,32 @@ app.get("/product/:id",async(req,res)=>{
 
 
 
-//TO SAVE DATA IN DATABASE
-app.post("/product",async(req,res)=>{
-    try{
-        const product = await Product.create(req.body)
-        res.status(200).json(product)
-    }
-    catch(err){
-        console.log(err)
-        res.status(500).json({message:err.message})
-    }
-})
+// //TO SAVE DATA IN DATABASE
+// app.post("/product",async(req,res)=>{
+//     try{
+//         const product = await Product.create(req.body)
+//         res.status(200).json(product)
+//     }
+//     catch(err){
+//         console.log(err)
+//         res.status(500).json({message:err.message})
+//     }
+// })
 
 
+
+// //TO SAVE DATA IN DATABASE USING MULTER
+//MULTER IS A MIDDLEWARE TO HANDLE FILE UPLOAD IN EXPRESS AND USED FOR MULTIPARTFORM DATA
+const upload = multer();
+app.post('/product', upload.none(), async (req, res) => {
+    try {
+        const product = await Product.create(req.body);
+        res.status(200).json(product);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: err.message });
+    }
+});
 
 //TO UPDATE DATA IN DATABASE
 app.put("/product/:id",async(req,res)=>{
